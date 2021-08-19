@@ -7,7 +7,7 @@
         <div class="header-right">
             <el-dropdown trigger='click' @command="handleCommand">
                 <span class="el-dropdown-link">
-                    {{ user }}<i class="el-icon-arrow-down el-icon--right"></i>
+                    {{ $store.state.user.name }}<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="password">修改密码</el-dropdown-item>
@@ -19,22 +19,45 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import { USER_SIGNOUT } from '@/store/user'
 export default {
   data() {
     return {
-      user: 'SUN',
+      // user: 'SUN',
       isCollapse: false, // 控制侧边栏的显示隐藏
     };
   },
   methods: {
+    ...mapActions([USER_SIGNOUT]),
     hadnleSidebar() {
       this.isCollapse = !this.isCollapse;
       this.$emit('sidebar', this.isCollapse);
     },
-    handleCommand() {
+    handleCommand( command ) {
     // 由vuex 来控制登陆的信息
+    switch(command) {
+      case 'password':
+        // 跳到修改密码页
+        this.$message.success('此项功能尚未开放')
+        break
+      case 'exit':
+        // this.USER_SIGNOUT(localStorage.getItem('user'))
+        this.USER_SIGNOUT()
+        this.$message.success('退出登陆')
+        this.$router.push({
+          name: 'login'
+        })
+    }
     },
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  mounted() {
+    console.log(this.user, 'user-------')
+    console.log(this.$store.state.user, '--------')
+  }
 };
 </script>
 
